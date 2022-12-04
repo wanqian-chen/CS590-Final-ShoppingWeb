@@ -25,7 +25,7 @@
       <b-button v-b-toggle="('collapse-'+key)" variant="primary">{{key}}</b-button>
       <b-collapse :id="('collapse-'+key)" class="mt-2">
         <b-card>
-          <b-form-checkbox-group v-model="draftOrderTeas" :options="value" />
+          <b-form-checkbox-group v-model="draftOrderAll[key]" :options="value" />
         </b-card>
       </b-collapse>
     </div>
@@ -76,7 +76,8 @@ async function save() {
         "Content-Type": "application/json",
       },
       method: "PUT",
-      body: JSON.stringify({ ingredients: draftOrderIngredients.value, teas: draftOrderTeas.value })
+      // body: JSON.stringify({ ingredients: draftOrderIngredients.value, teas: draftOrderTeas.value })
+      body: JSON.stringify({ allOrders: draftOrderAll })
     }
   )
 }

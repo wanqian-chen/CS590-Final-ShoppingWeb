@@ -25,7 +25,8 @@ export const possibleAll = {
 
 export interface DraftOrder {
   customerId: string
-  ingredients: string[]
+  ingredients?: string[]
+  allOrders?: object
 }
 
 export interface Order extends DraftOrder {
