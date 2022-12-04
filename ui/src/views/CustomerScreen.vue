@@ -63,7 +63,8 @@ async function refresh() {
 
   if (user.value) {
     customer.value = await (await fetch("/api/customer")).json()
-    draftOrderIngredients.value = (await (await fetch("/api/customer/draft-order")).json())?.ingredients || []
+    // draftOrderIngredients.value = (await (await fetch("/api/customer/draft-order")).json())?.ingredients || []
+    draftOrderIngredients.value = (await (await fetch("/api/customer/draft-order")).json())?.allOrders || {}
   }
 }
 watch(user, refresh, { immediate: true })

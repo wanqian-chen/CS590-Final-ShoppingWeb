@@ -140,7 +140,8 @@ app.get("/api/customer/draft-order", checkAuthenticated, async (req, res) => {
   // TODO: validate customerId
 
   const draftOrder = await orders.findOne({ state: "draft", customerId })
-  res.status(200).json(draftOrder || { customerId, ingredients: [] })
+  // res.status(200).json(draftOrder || { customerId, ingredients: [] })
+  res.status(200).json(draftOrder || { customerId })
 })
 
 app.put("/api/customer/draft-order", checkAuthenticated, async (req, res) => {
@@ -158,7 +159,7 @@ app.put("/api/customer/draft-order", checkAuthenticated, async (req, res) => {
       //   ingredients: order.ingredients
       // }
       $set: {
-        ingredients: order.allOrders
+        order: order.allOrders
       }
     },
     {
