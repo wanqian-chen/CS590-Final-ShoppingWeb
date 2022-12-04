@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from '@/App.vue'
 import CustomerScreen from '@/views/CustomerScreen.vue'
+import CustomerOrderHistory from '@/views/CustomerOrderHistory.vue'
 import OperatorScreen from '@/views/OperatorScreen.vue'
 import StatusScreen from '@/views/StatusScreen.vue'
 
@@ -20,6 +21,10 @@ const router = new VueRouter({
     {
       path: "/customer",
       component: CustomerScreen,
+    },
+    {
+      path: "/customer/history",
+      component: CustomerOrderHistory,
     },
     {
       path: "/operator",

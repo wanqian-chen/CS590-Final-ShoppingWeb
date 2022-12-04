@@ -4,6 +4,25 @@ export const possibleIngredients = [
   "banana",
 ]
 
+export const possibleTeas = [
+  "s",
+  "milk",
+  "b",
+]
+
+export const possibleAll = {
+  "smoothie": [
+    "a",
+    "b"
+  ],
+  "milk": [
+    "c"
+  ],
+  "coffee": [
+    "d"
+  ]
+}
+
 export interface DraftOrder {
   customerId: string
   ingredients: string[]

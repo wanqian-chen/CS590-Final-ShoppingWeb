@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import pino from 'pino'
 import expressPinoLogger from 'express-pino-logger'
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import { DraftOrder, Order, possibleIngredients } from './data'
+import { DraftOrder, Order, possibleIngredients, possibleTeas, possibleAll } from './data'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import { Issuer, Strategy } from 'openid-client'
@@ -101,6 +101,14 @@ app.get("/api/user", (req, res) => {
 
 app.get("/api/possible-ingredients", checkAuthenticated, (req, res) => {
   res.status(200).json(possibleIngredients)
+})
+
+app.get("/api/possible-teas", checkAuthenticated, (req, res) => {
+  res.status(200).json(possibleTeas)
+})
+
+app.get("/api/possible-all", checkAuthenticated, (req, res) => {
+  res.status(200).json(possibleAll)
 })
 
 app.get("/api/customer", checkAuthenticated, async (req, res) => {
@@ -231,7 +239,7 @@ client.connect().then(() => {
   orders = db.collection('orders')
   customers = db.collection('customers')
 
-  Issuer.discover("http://127.0.0.1:8081/auth/realms/smoothie/.well-known/openid-configuration").then(issuer => {
+  Issuer.discover("http://127.0.0.1:8081/auth/realms/Smoothie/.well-known/openid-configuration").then(issuer => {
     const client = new issuer.Client(keycloak)
   
     passport.use("oidc", new Strategy(
