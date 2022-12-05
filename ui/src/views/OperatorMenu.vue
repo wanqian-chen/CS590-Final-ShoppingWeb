@@ -2,26 +2,18 @@
   <div class="mx-3 my-3">
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
-    <!-- <b-table :items="orders" :fields="fields">
-      <template #cell(operatorId)="cellScope">
-        <span v-if="cellScope.value">
-          {{ cellScope.value }}
-          <b-button @click="updateOrder(cellScope.item._id, 'done')" v-if="cellScope.value === user?.preferred_username && cellScope.item.state !== 'done'">
-            Done
-          </b-button>
-        </span>
-        <b-button v-else @click="updateOrder(cellScope.item._id, 'blending')">Start Blending</b-button>
-      </template>
-    </b-table> -->
 
     <div class="accordion" role="tablist">
-      <b-card no-body class="mb-1">
+      <b-card no-body class="mb-1" v-for="(value, key) in possibleAll">
         <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button block v-b-toggle.accordion-1 variant="info">Accordion 1</b-button>
+          <b-button block v-b-toggle.accordion-1 variant="info">{{key}}</b-button>
         </b-card-header>
         <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
-            <b-card-text>I start opened because <code>visible</code> is <code>true</code></b-card-text>
+            <!-- <b-card-text>{{value}}</b-card-text> -->
+            <div v-for="item in value">
+              {{item}}
+            </div>
           </b-card-body>
         </b-collapse>
       </b-card>
