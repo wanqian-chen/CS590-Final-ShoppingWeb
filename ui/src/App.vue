@@ -10,6 +10,7 @@
         <b-nav-item v-if="user?.roles?.includes('customer')" href="/customer">My Orders</b-nav-item>
         <b-nav-item v-if="user?.roles?.includes('customer')" href="/customer/history">History Orders</b-nav-item>
         <b-nav-item v-if="user?.roles?.includes('operator')" href="/operator">My Work Screen</b-nav-item>
+        <b-nav-item v-if="user?.roles?.includes('operator')" href="/operator/menu">Menu</b-nav-item>
         <b-nav-item v-if="user?.name == null" href="/api/login">Login</b-nav-item>
         <b-nav-item v-if="user?.name" @click="logout">Logout</b-nav-item>
         <form method="POST" action="/api/logout" id="logoutForm" />
