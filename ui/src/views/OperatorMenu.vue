@@ -12,7 +12,8 @@
           <b-card-body>
             <!-- <b-card-text>{{value}}</b-card-text> -->
             <div v-for="item in value">
-              {{item}}
+              <b-card-text>{{item}}</b-card-text>
+              <button>-</button>
             </div>
           </b-card-body>
         </b-collapse>
