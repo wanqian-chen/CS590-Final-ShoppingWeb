@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb'
-import { Operator, Customer } from './data'
+import { Operator, Customer, MenuItem } from './data'
 
 // Connection URL
 const url = 'mongodb://localhost:27017'
@@ -16,6 +16,31 @@ const operators: Operator[] = [
   },
 ]
 
+const menuItems: MenuItem[] = [
+  {
+    itemId: "smoothie",
+    ingredientChoices: [
+      "strawberry",
+      "apple",
+      "banana"
+    ]
+  },
+  {
+    itemId: "milk",
+    ingredientChoices: [
+      "whole",
+      "low fat"
+    ]
+  },
+  {
+    itemId: "coffee",
+    ingredientChoices: [
+      "latte",
+      "america"
+    ]
+  }
+]
+
 async function main() {
   await client.connect()
   console.log('Connected successfully to MongoDB')
@@ -30,6 +55,7 @@ async function main() {
 
   // add data
   console.log("inserting operators", await db.collection("operators").insertMany(operators as any))
+  console.log("inserting menu", await db.collection("menu").insertMany(menuItems as any))
 
   process.exit(0)
 }
