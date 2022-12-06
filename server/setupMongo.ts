@@ -14,6 +14,10 @@ const operators: Operator[] = [
     _id: "mary",
     name: "Mary",
   },
+  {
+    _id: "john",
+    name: "John"
+  }
 ]
 
 const menuItems: MenuItem[] = [

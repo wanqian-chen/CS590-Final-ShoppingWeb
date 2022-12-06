@@ -2,42 +2,46 @@
   <div class="mx-3 my-3">
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
+    <!-- <b-button @click="addNewItem" class="mb-2">Add a new item</b-button> -->
 
     <div class="accordion" role="tablist">
-      <b-card no-body class="mb-1" v-for="(value, key) in possibleAll">
+      <b-card no-body class="mb-1" v-for="menuItem in menu">
         <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button block v-b-toggle.accordion-1 variant="info">{{key}}</b-button>
+          <b-button block v-b-toggle.accordion-1 variant="info">{{menuItem.itemId}}</b-button>
         </b-card-header>
         <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
             <!-- <b-card-text>{{value}}</b-card-text> -->
-            <div v-for="item in value">
-              <b-card-text>{{item}}</b-card-text>
-              <button>-</button>
+            <div v-for="choice in menuItem.ingredientChoices">
+              <b-card-text>{{choice}}</b-card-text>
+              <b-button @click="refresh" class="mb-2">-</b-button>
+              <b-button @click="updateIngredient" class="mb-2">Revise</b-button>
             </div>
+            <b-button @click="refresh" class="mb-2">Add an ingredient</b-button>
           </b-card-body>
         </b-collapse>
       </b-card>
     </div>
 
-    <div v-for="(value, key) in possibleAll">
+    <!-- <div v-for="(value, key) in possibleAll">
     <b-button v-b-toggle="('collapse-'+key)" variant="primary">{{key}}</b-button>
     <b-collapse :id="('collapse-'+key)" class="mt-2">
       <b-card>
         <b-form-checkbox-group v-model="draftOrderAll[key]" :options="value" />
       </b-card>
     </b-collapse>
-    </div>
+    </div> -->
   </div>
 
 </template>
 
 <script setup lang="ts">
 import { watch, ref, Ref, inject } from 'vue'
-import { Operator, Order } from "../../../server/data"
+import { Operator, Order, MenuItem } from "../../../server/data"
 
 const operator: Ref<Operator | null> = ref(null)
 const orders: Ref<Order[]> = ref([])
+const menu: Ref<MenuItem[]> = ref([])
 
 const draftOrderAll: Ref<Object> = ref({})
 const possibleAll: Ref<Object> = ref({})
@@ -51,12 +55,13 @@ async function refresh() {
     operator.value = await (await fetch("/api/operator/")).json()
   }
   orders.value = await (await fetch("/api/orders/")).json()
+  menu.value = await (await fetch("/api/menu/")).json()
 }
 watch(user, refresh, { immediate: true })
 
 const fields = ["_id", "customerId", "state", "ingredients", "operatorId"]
 
-async function updateOrder(orderId: string, state: string) {
+async function updateIngredient(orderId: string, state: string) {
   await fetch(
     "/api/order/" + encodeURIComponent(orderId),
     {
@@ -72,4 +77,5 @@ async function updateOrder(orderId: string, state: string) {
   )
   await refresh()
 }
+
 </script>

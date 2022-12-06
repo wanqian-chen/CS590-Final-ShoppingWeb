@@ -23,6 +23,11 @@ export const possibleAll = {
   ]
 }
 
+export interface MenuItem {
+  itemId: string
+  ingredientChoices: string[]
+}
+
 export interface DraftOrder {
   customerId: string
   ingredients?: string[]

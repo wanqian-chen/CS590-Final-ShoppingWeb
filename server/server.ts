@@ -28,6 +28,7 @@ let db: Db
 let customers: Collection
 let orders: Collection
 let operators: Collection
+let menu: Collection
 
 // set up Express
 const app = express()
@@ -93,6 +94,10 @@ app.post(
 
 app.get("/api/orders", async (req, res) => {
   res.status(200).json(await orders.find({ state: { $ne: "draft" }}).toArray())
+})
+
+app.get("/api/menu", async (req, res) => {
+  res.status(200).json(await menu.find().toArray())
 })
 
 app.get("/api/user", (req, res) => {
@@ -235,6 +240,53 @@ app.put("/api/order/:orderId", checkAuthenticated, async (req, res) => {
   res.status(200).json({ status: "ok" })
 })
 
+app.put("/api/menu/ingredient/revise", checkAuthenticated, async (req, res) => {
+  const order: Order = req.body
+
+  // TODO: validate order object
+
+  const condition: any = {
+    _id: new ObjectId(req.params.orderId),
+    state: { 
+      $in: [
+        // because PUT is idempotent, ok to call PUT twice in a row with the existing state
+        order.state
+      ]
+    },
+  }
+  switch (order.state) {
+    case "blending":
+      condition.state.$in.push("queued")
+      // can only go to blending state if no operator assigned (or is the current user, due to idempotency)
+      condition.$or = [{ operatorId: { $exists: false }}, { operatorId: order.operatorId }]
+      break
+    case "done":
+      condition.state.$in.push("blending")
+      condition.operatorId = order.operatorId
+      break
+    default:
+      // invalid state
+      res.status(400).json({ error: "invalid state" })
+      return
+  }
+  
+  const result = await orders.updateOne(
+    condition,
+    {
+      $set: {
+        state: order.state,
+        operatorId: order.operatorId,
+      }
+    }
+  )
+
+  if (result.matchedCount === 0) {
+    res.status(400).json({ error: "orderId does not exist or state change not allowed" })
+    return
+  }
+  res.status(200).json({ status: "ok" })
+})
+
 // connect to Mongo
 client.connect().then(() => {
   logger.info('connected successfully to MongoDB')
@@ -242,6 +294,7 @@ client.connect().then(() => {
   operators = db.collection('operators')
   orders = db.collection('orders')
   customers = db.collection('customers')
+  menu = db.collection('menu')
 
   Issuer.discover("http://127.0.0.1:8081/auth/realms/Smoothie/.well-known/openid-configuration").then(issuer => {
     const client = new issuer.Client(keycloak)
