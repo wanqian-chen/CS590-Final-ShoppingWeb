@@ -2,7 +2,8 @@
   <div class="mx-3 my-3">
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
-    <!-- <b-button @click="addNewItem" class="mb-2">Add a new item</b-button> -->
+    <b-button @click="refresh" class="mb-2">Add a new item</b-button>
+    <b-button @click="editModeSwitch" class="mb-2">Edit Mode</b-button>
 
     <div class="accordion" role="tablist">
       <b-card no-body class="mb-1" v-for="menuItem in menu">
@@ -13,30 +14,23 @@
           <b-card-body>
             <!-- <b-card-text>{{value}}</b-card-text> -->
             <div v-for="choice in menuItem.ingredientChoices">
-              <b-card-text>{{choice}}</b-card-text>
-              <b-button @click="refresh" class="mb-2">-</b-button>
-              <b-button @click="updateIngredient" class="mb-2">Revise</b-button>
+              <!-- <b-button @click="updateIngredient(menuItem.itemId, choice)" class="mb-2">Revise</b-button> -->
+              <b-form-input v-if="mode.edit" v-model="choice" type="text"></b-form-input>
+              <b-button v-if="mode.edit" @click="refresh" class="mb-2">-</b-button>
+              <b-card-text v-if="!mode.edit">{{choice}}</b-card-text>
             </div>
             <b-button @click="refresh" class="mb-2">Add an ingredient</b-button>
           </b-card-body>
         </b-collapse>
       </b-card>
     </div>
-
-    <!-- <div v-for="(value, key) in possibleAll">
-    <b-button v-b-toggle="('collapse-'+key)" variant="primary">{{key}}</b-button>
-    <b-collapse :id="('collapse-'+key)" class="mt-2">
-      <b-card>
-        <b-form-checkbox-group v-model="draftOrderAll[key]" :options="value" />
-      </b-card>
-    </b-collapse>
-    </div> -->
   </div>
 
 </template>
 
 <script setup lang="ts">
-import { watch, ref, Ref, inject } from 'vue'
+
+import Vue, { watch, ref, Ref, inject } from 'vue'
 import { Operator, Order, MenuItem } from "../../../server/data"
 
 const operator: Ref<Operator | null> = ref(null)
@@ -47,6 +41,10 @@ const draftOrderAll: Ref<Object> = ref({})
 const possibleAll: Ref<Object> = ref({})
 
 const user: Ref<any> = inject("user")!
+
+const mode = {
+  edit: false
+}
 
 async function refresh() {
   possibleAll.value = await (await fetch("/api/possible-all")).json()
@@ -59,23 +57,24 @@ async function refresh() {
 }
 watch(user, refresh, { immediate: true })
 
-const fields = ["_id", "customerId", "state", "ingredients", "operatorId"]
-
-async function updateIngredient(orderId: string, state: string) {
+async function updateIngredient(menuItem: string, choice: string) {
   await fetch(
-    "/api/order/" + encodeURIComponent(orderId),
+    "/api/order/" + encodeURIComponent(menuItem) + "/" + encodeURIComponent(choice),
     {
       headers: {
         "Content-Type": "application/json",
       },
       method: "PUT",
       body: JSON.stringify({
-        operatorId: user.value.preferred_username,
-        state,
+        choice: "a"
       })
     }
   )
   await refresh()
 }
 
+async function editModeSwitch() {
+  mode.edit = !mode.edit
+  await refresh()
+}
 </script>
