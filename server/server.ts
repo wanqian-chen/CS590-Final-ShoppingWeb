@@ -241,7 +241,6 @@ app.put("/api/order/:orderId", checkAuthenticated, async (req, res) => {
 })
 
 app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
-  // TODO: validate order object
   const draft = req.body.draft
 
   const condition: any = {
@@ -281,6 +280,47 @@ app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
       return
   }
   
+  res.status(200).json({ status: "ok" })
+})
+
+app.put("/api/menudelete/ingredient", checkAuthenticated, async (req, res) => {
+  const draft = req.body
+
+  const condition: any = {
+    itemId: draft.itemId
+  }
+
+  const resultRevise = await menu.updateOne(
+    condition,
+    {
+      $pull: {
+        ingredientChoices: draft.ingredientId
+      }
+    }
+  )
+  if (resultRevise.matchedCount === 0) {
+    res.status(400).json({ error: "collection not exists" })
+    return
+  }
+
+  res.status(200).json({ status: "ok" })
+})
+
+app.put("/api/menudelete/item", checkAuthenticated, async (req, res) => {
+  const draft = req.body
+
+  const condition: any = {
+    itemId: draft.itemId
+  }
+
+  const resultRevise = await menu.deleteOne(
+    condition
+  )
+  if (resultRevise.acknowledged === false) {
+    res.status(400).json({ error: "collection not exists" })
+    return
+  }
+
   res.status(200).json({ status: "ok" })
 })
 
