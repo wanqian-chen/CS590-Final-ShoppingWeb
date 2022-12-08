@@ -246,12 +246,11 @@ app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
 
   const condition: any = {
     itemId: draft.reviseItem
-
   }
 
   switch (req.body.mode) {
     case "revise":
-      const result = await menu.updateOne(
+      const resultRevise = await menu.updateOne(
         condition,
         {
           $push: {
@@ -259,14 +258,22 @@ app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
           }
         }
       )
-      if (result.matchedCount === 0) {
-        res.status(400).json({ error: "orderId does not exist or state change not allowed" })
+      if (resultRevise.matchedCount === 0) {
+        res.status(400).json({ error: "collection not exists" })
         return
       }
       break
     case "add":
-      // condition.state.$in.push("blending")
-      // condition.operatorId = req.body.operatorId
+      const resultAdd = await menu.insertOne(
+        {
+          itemId: draft.newItem,
+          ingredientChoices: []
+        }
+      )
+      if (resultAdd.acknowledged === false) {
+        res.status(400).json({ error: "insert data failed" })
+        return
+      }
       break
     default:
       // invalid state

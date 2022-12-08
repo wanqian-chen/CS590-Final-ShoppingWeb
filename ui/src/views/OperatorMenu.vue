@@ -8,9 +8,9 @@
     <div class="accordion" role="tablist">
       <b-card no-body class="mb-1" v-for="menuItem in menu">
         <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button block v-b-toggle.accordion-1 variant="info">{{menuItem.itemId}}</b-button>
+          <b-button block v-b-toggle="('accordion-'+menuItem.itemId)" variant="info">{{menuItem.itemId}}</b-button>
         </b-card-header>
-        <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+        <b-collapse :id="('accordion-'+menuItem.itemId)" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
             <!-- <b-card-text>{{value}}</b-card-text> -->
             <div v-for="choice in menuItem.ingredientChoices">
@@ -20,9 +20,12 @@
               <b-card-text v-if="!mode.edit">{{choice}}</b-card-text>
             </div>
 
-            <b-button v-if="mode.edit && menuItem.itemId != draft.reviseItem" @click="addIngredient(menuItem.itemId)" class="mb-2">Add an ingredient</b-button>
-            <b-form-input v-if="menuItem.itemId == draft.reviseItem" v-model="draft.reviseIngredient" placeholder="Add an ingredient"></b-form-input>
-            <b-button v-if="menuItem.itemId == draft.reviseItem" @click="save(String('revise'))" class="mb-2">Save</b-button>
+            <div v-if="(mode.edit && !mode.addNew)">
+              <b-button v-if="menuItem.itemId != draft.reviseItem" @click="addIngredient(menuItem.itemId)" class="mb-2">Add an ingredient</b-button>
+              <b-form-input v-if="menuItem.itemId == draft.reviseItem" v-model="draft.reviseIngredient" placeholder="Add an ingredient"></b-form-input>
+              <b-button v-if="menuItem.itemId == draft.reviseItem" @click="save(String('revise'))" class="mb-2">Save</b-button>
+              <b-button v-if="menuItem.itemId == draft.reviseItem" @click="reset" class="mb-2">Cancel</b-button>
+            </div>
 
           </b-card-body>
         </b-collapse>
@@ -30,10 +33,13 @@
     </div>
 
     <div v-if="mode.edit">
-      <h3>Add a new item:</h3>
-      <b-form-input v-model="draft.newItem" placeholder="Input a new item"></b-form-input>
-      <b-button @click="refresh" class="mb-2">Save</b-button>
-      <b-button @click="clearInput" class="mb-2">Clear</b-button>
+      <b-button v-if="!mode.addNew" @click="startAdding" class="mb-2">Add an item</b-button>
+      <div v-if="(mode.addNew)">
+        <!-- <h3>Add a new item:</h3> -->
+        <b-form-input v-model="draft.newItem" placeholder="Input a new item"></b-form-input>
+        <b-button @click="save(String('add'))" class="mb-2">Save</b-button>
+        <b-button @click="reset" class="mb-2">Cancel</b-button>
+      </div>
     </div>
   </div>
 
@@ -54,7 +60,8 @@ const possibleAll: Ref<Object> = ref({})
 const user: Ref<any> = inject("user")!
 
 const mode = {
-  edit: false
+  edit: false,
+  addNew: false
 }
 
 const draft = {
@@ -95,8 +102,17 @@ async function editModeSwitch() {
   await refresh()
 }
 
-async function clearInput() {
+async function startAdding() {
+  mode.addNew = true
+  await refresh()
+}
 
+async function reset() {
+  draft.newItem = ""
+  draft.reviseItem = ""
+  draft.reviseIngredient = ""
+  mode.addNew = false
+  await refresh()
 }
 
 async function addIngredient(menuItem: string) {
@@ -120,11 +136,7 @@ async function save(mode: string) {
   }
   )
 
-  draft.newItem = ""
-  draft.reviseItem = ""
-  draft.reviseIngredient = ""
-
-  await refresh()
+  await reset()
 }
 
 </script>
