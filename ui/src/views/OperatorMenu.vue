@@ -20,9 +20,9 @@
               <b-card-text v-if="!mode.edit">{{choice}}</b-card-text>
             </div>
 
-            <b-button v-if="mode.edit && String(menuItem) != draft.reviseItem" @click="addIngredient(String(menuItem))" class="mb-2">Add an ingredient</b-button>
-            <b-form-input v-if="String(menuItem) == draft.reviseItem" v-model="draft.reviseIngredient" placeholder="Add an ingredient"></b-form-input>
-            <b-button v-if="String(menuItem) == draft.reviseItem" @click="save(String('revise'))" class="mb-2">Save</b-button>
+            <b-button v-if="mode.edit && menuItem.itemId != draft.reviseItem" @click="addIngredient(menuItem.itemId)" class="mb-2">Add an ingredient</b-button>
+            <b-form-input v-if="menuItem.itemId == draft.reviseItem" v-model="draft.reviseIngredient" placeholder="Add an ingredient"></b-form-input>
+            <b-button v-if="menuItem.itemId == draft.reviseItem" @click="save(String('revise'))" class="mb-2">Save</b-button>
 
           </b-card-body>
         </b-collapse>
@@ -114,15 +114,15 @@ async function save(mode: string) {
     },
     method: "PUT",
     body: JSON.stringify({
-      mode: mode,
+      mode,
       draft: draft
     })
   }
   )
 
-  draft.reviseIngredient = ""
-  draft.reviseItem = ""
   draft.newItem = ""
+  draft.reviseItem = ""
+  draft.reviseIngredient = ""
 
   await refresh()
 }

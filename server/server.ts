@@ -245,8 +245,7 @@ app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
   const draft = req.body.draft
 
   const condition: any = {
-    itemId: draft.reviseItem,
-    // _id: new ObjectId(req.params.orderId),
+    itemId: draft.reviseItem
 
   }
 
@@ -256,7 +255,7 @@ app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
         condition,
         {
           $push: {
-            ingredientChoices: draft.reviseingredient
+            ingredientChoices: draft.reviseIngredient
           }
         }
       )
