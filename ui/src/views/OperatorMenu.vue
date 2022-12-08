@@ -9,6 +9,7 @@
       <b-card no-body class="mb-1" v-for="menuItem in menu">
         <b-card-header header-tag="header" class="p-1" role="tab">
           <b-button v-b-toggle="('accordion-'+menuItem.itemId)" variant="info">{{menuItem.itemId}}</b-button>
+          <b-button v-if="mode.edit" @click="deleteItem(menuItem.itemId)" class="mb-2">Delete Item</b-button>
         </b-card-header>
         <b-collapse :id="('accordion-'+menuItem.itemId)" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
@@ -16,7 +17,7 @@
             <div v-for="choice in menuItem.ingredientChoices">
               <!-- <b-button @click="updateIngredient(menuItem.itemId, choice)" class="mb-2">Revise</b-button> -->
               <b-form-input v-if="mode.edit" v-model="choice" type="text"></b-form-input>
-              <b-button v-if="mode.edit" @click="refresh" class="mb-2">-</b-button>
+              <b-button v-if="mode.edit" @click="deleteIngredient(menuItem.itemId, choice)" class="mb-2">-</b-button>
               <b-card-text v-if="!mode.edit">{{choice}}</b-card-text>
             </div>
 
@@ -118,6 +119,41 @@ async function reset() {
 async function addIngredient(menuItem: string) {
   draft.reviseItem = menuItem
   draft.reviseIngredient = ""
+  await refresh()
+}
+
+async function deleteIngredient(itemId: string, ingredientId: string) {
+  await fetch(
+  "/api/menudelete/ingredient",
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "PUT",
+    body: JSON.stringify({
+      itemId,
+      ingredientId
+    })
+  }
+  )
+
+  await refresh()
+}
+
+async function deleteItem(itemId: string) {
+  await fetch(
+  "/api/menudelete/item",
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "PUT",
+    body: JSON.stringify({
+      itemId
+    })
+  }
+  )
+
   await refresh()
 }
 
