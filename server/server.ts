@@ -240,6 +240,44 @@ app.put("/api/order/:orderId", checkAuthenticated, async (req, res) => {
   res.status(200).json({ status: "ok" })
 })
 
+app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
+  // TODO: validate order object
+  const draft = req.body.draft
+
+  const condition: any = {
+    itemId: draft.reviseItem,
+    // _id: new ObjectId(req.params.orderId),
+
+  }
+
+  switch (req.body.mode) {
+    case "revise":
+      const result = await menu.updateOne(
+        condition,
+        {
+          $push: {
+            ingredientChoices: draft.reviseingredient
+          }
+        }
+      )
+      if (result.matchedCount === 0) {
+        res.status(400).json({ error: "orderId does not exist or state change not allowed" })
+        return
+      }
+      break
+    case "add":
+      // condition.state.$in.push("blending")
+      // condition.operatorId = req.body.operatorId
+      break
+    default:
+      // invalid state
+      res.status(400).json({ error: "invalid state" })
+      return
+  }
+  
+  res.status(200).json({ status: "ok" })
+})
+
 app.put("/api/menu/ingredient/revise", checkAuthenticated, async (req, res) => {
   const order: Order = req.body
 
