@@ -8,7 +8,7 @@
     <div class="accordion" role="tablist">
       <b-card no-body class="mb-1" v-for="menuItem in menu">
         <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button block v-b-toggle="('accordion-'+menuItem.itemId)" variant="info">{{menuItem.itemId}}</b-button>
+          <b-button v-b-toggle="('accordion-'+menuItem.itemId)" variant="info">{{menuItem.itemId}}</b-button>
         </b-card-header>
         <b-collapse :id="('accordion-'+menuItem.itemId)" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
