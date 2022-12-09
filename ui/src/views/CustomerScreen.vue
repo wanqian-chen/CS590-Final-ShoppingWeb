@@ -3,17 +3,8 @@
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <b-table v-if="customer" :items="customer.orders" />
-    
-    <h2>Your Cart</h2>
-    <div v-for="(ingredients, item, index) in draftOrderAll">
-      <span>{{(index+1)}}. </span>
-      <span>{{item}} with </span>
-      <span v-for="i in ingredients">
-        {{i}}
-      </span>
-      <span v-if="index != Object.keys(draftOrderAll).length">, </span>
-    </div>
 
+    <h2>Select Items:</h2>
     <div>
       <b-form-select @change="refresh" v-model="draftOrder.selectedItem" :options="menu" value-field="itemId" text-field="itemId" class="mb-3">
         <!-- This slot appears above the options from 'options' prop -->
@@ -27,6 +18,16 @@
       <div v-if="(menuItem.itemId == draftOrder.selectedItem)">
         <b-form-checkbox-group v-model="draftOrder.selectedIngredients" :options="menuItem.ingredientChoices" />
       </div>
+    </div>
+    
+    <h2>Your Cart</h2>
+    <div v-for="(ingredients, item, index) in draftOrderAll">
+      <span>{{(index+1)}}. </span>
+      <span>{{item}} with </span>
+      <span v-for="i in ingredients">
+        {{i}}
+      </span>
+      <span v-if="index != Object.keys(draftOrderAll).length - 1">, {{Object.keys(draftOrderAll).length}}</span>
     </div>
 
     <div class="mt-2">
