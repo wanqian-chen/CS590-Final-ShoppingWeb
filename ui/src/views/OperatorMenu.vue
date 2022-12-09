@@ -3,7 +3,6 @@
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <b-form-checkbox id="edit-mode-switch" v-model="mode.edit" @change="refresh" class="mb-2" switch>Edit Mode</b-form-checkbox>
-    <!-- <b-button v-if="mode.edit" @click="addNewItem" class="mb-2">Add a new item</b-button> -->
 
     <div class="accordion" role="tablist">
       <b-card no-body class="mb-1" v-for="menuItem in menu">
@@ -13,11 +12,8 @@
         </b-card-header>
         <b-collapse :id="('accordion-'+menuItem.itemId)" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
-            <!-- <b-card-text>{{value}}</b-card-text> -->
             <div v-for="choice in menuItem.ingredientChoices">
-              <!-- <b-button @click="updateIngredient(menuItem.itemId, choice)" class="mb-2">Revise</b-button> -->
               <b-form-input :id="('ingredient-'+choice)" v-if="mode.edit" v-model="choice" @focus="saveOrigin(String(choice))" @blur="reviseIngredient(menuItem.itemId, String(choice))" type="text"></b-form-input>
-              <!-- <b-button v-if="mode.edit" @click="reviseIngredient(menuItem.itemId, String(choice))" class="mt-2 mb-4 mr-2">Save</b-button> -->
               <b-button :id="('menu-delete-ingredient-'+choice)" v-if="mode.edit" @click="deleteIngredient(menuItem.itemId, choice)" class="mt-2 mb-4" variant="outline-danger">Delete the ingredient</b-button>
               <b-card-text v-if="!mode.edit">{{choice}}</b-card-text>
             </div>
