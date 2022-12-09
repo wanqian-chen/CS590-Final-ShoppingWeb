@@ -1,10 +1,3 @@
-// export const possibleIngredients = [
-//   "strawberry",
-//   "milk",
-//   "banana",
-// ]
-
-
 export interface MenuItem {
   itemId: string
   ingredientChoices: string[]

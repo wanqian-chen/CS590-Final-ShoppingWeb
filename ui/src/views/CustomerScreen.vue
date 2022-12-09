@@ -6,7 +6,6 @@
     <h2 class="mt-5">Select Items:</h2>
     <div>
       <b-form-select id="choose-item" @change="refresh" v-model="draftOrder.selectedItem" :options="menu" value-field="itemId" text-field="itemId" class="mb-3">
-        <!-- This slot appears above the options from 'options' prop -->
         <template #first>
           <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
         </template>
@@ -58,7 +57,6 @@ const draftOrder = {
 }
 
 async function refresh() {
-  // possibleIngredients.value = await (await fetch("/api/possible-ingredients")).json()
   menu.value = await (await fetch("/api/menu/")).json()
 
   if (user.value) {
@@ -93,7 +91,6 @@ async function save() {
         "Content-Type": "application/json",
       },
       method: "PUT",
-      // body: JSON.stringify({ ingredients: draftOrderIngredients.value, teas: draftOrderTeas.value })
       body: JSON.stringify({ allOrders: draftOrderAll.value })
     }
   )

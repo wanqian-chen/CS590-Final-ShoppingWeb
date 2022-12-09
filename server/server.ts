@@ -159,9 +159,6 @@ app.put("/api/customer/draft-order", checkAuthenticated, async (req, res) => {
       state: "draft",
     },
     {
-      // $set: {
-      //   ingredients: order.ingredients
-      // }
       $set: {
         order: order.allOrders
       }

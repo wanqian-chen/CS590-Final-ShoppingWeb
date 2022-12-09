@@ -33,7 +33,6 @@
     <div v-if="mode.edit">
       <b-button id="menu-add-item" v-if="!mode.addNew" @click="startAdding" class="mb-2 mt-4" variant="outline-primary">Add an item</b-button>
       <div v-if="(mode.addNew)" class="mt-4">
-        <!-- <h3>Add a new item:</h3> -->
         <b-form-input id="input-item" v-model="draft.newItem" placeholder="Input a new item"></b-form-input>
         <b-button id="menu-save-item" @click="save(String('add'))" class="mb-2 mt-2 mr-2">Save</b-button>
         <b-button id="menu-cancel-item" @click="reset" class="mb-2 mt-2">Cancel</b-button>
