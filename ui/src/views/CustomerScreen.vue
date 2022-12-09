@@ -6,11 +6,12 @@
     
     <h2>Your Cart</h2>
     <div v-for="(ingredients, item, index) in draftOrderAll">
-      <span>{{index}}. </span>
+      <span>{{(index+1)}}. </span>
       <span>{{item}} with </span>
       <span v-for="i in ingredients">
-        {{i}}  
+        {{i}}
       </span>
+      <span v-if="index != Object.keys(draftOrderAll).length">, </span>
     </div>
 
     <div>
