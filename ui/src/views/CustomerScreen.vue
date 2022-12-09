@@ -4,30 +4,32 @@
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <b-table v-if="customer" :items="customer.orders" />
     
-    <h2>Draft Order</h2>
-    Check the ingredients you want:
-    <b-form-checkbox-group v-model="draftOrderIngredients" :options="possibleIngredients" />
-    <b-form-checkbox-group v-model="draftOrderTeas" :options="possibleTeas" />
+    <h2>Your Cart</h2>
+    <div v-for="(ingredients, item, index) in draftOrderAll">
+      <span>{{index}}. </span>
+      <span>{{item}} with </span>
+      <span v-for="i in ingredients">
+        {{i}}  
+      </span>
+    </div>
 
-    <b-button v-b-toggle.collapse-1 variant="primary">Toggle Collapse</b-button>
-    <b-collapse id="collapse-1" class="mt-2">
-      <b-card>
-        <b-form-checkbox-group v-model="draftOrderTeas" :options="possibleTeas" />
-        <!-- <p class="card-text">Collapse contents Here</p> -->
-        <!-- <b-button v-b-toggle.collapse-1-inner size="sm">Toggle Inner Collapse</b-button>
-        <b-collapse id="collapse-1-inner" class="mt-2">
-          <b-card>Hello!</b-card>
-        </b-collapse> -->
-      </b-card>
-    </b-collapse>
+    <div>
+      <b-form-select @change="refresh" v-model="draftOrder.selectedItem" :options="menu" value-field="itemId" text-field="itemId" class="mb-3">
+        <!-- This slot appears above the options from 'options' prop -->
+        <template #first>
+          <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
+        </template>
+      </b-form-select>
+    </div>
 
-    <div v-for="(value, key) in possibleAll">
-      <b-button v-b-toggle="('collapse-'+key)" variant="primary">{{key}}</b-button>
-      <b-collapse :id="('collapse-'+key)" class="mt-2">
-        <b-card>
-          <b-form-checkbox-group v-model="draftOrderAll[key]" :options="value" />
-        </b-card>
-      </b-collapse>
+    <div v-for="menuItem in menu" class="mb-3">
+      <div v-if="(menuItem.itemId == draftOrder.selectedItem)">
+        <b-form-checkbox-group v-model="draftOrder.selectedIngredients" :options="menuItem.ingredientChoices" />
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <b-button @click="addToCart">Add to cart</b-button>
     </div>
 
     <div class="mt-2">
@@ -41,8 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref, inject, Ref } from 'vue'
-import { CustomerWithOrders } from "../../../server/data"
+import Vue, { watch, ref, inject, Ref } from 'vue'
+import { CustomerWithOrders, MenuItem,  } from "../../../server/data"
 
 const customer: Ref<CustomerWithOrders | null> = ref(null)
 const user: Ref<any> = inject("user")!
@@ -53,13 +55,20 @@ const possibleIngredients: Ref<string[]> = ref([])
 const draftOrderTeas: Ref<string[]> = ref([])
 const possibleTeas: Ref<string[]> = ref([])
 
-const draftOrderAll: Ref<Object> = ref({})
+let draftOrderAll = {}
 const possibleAll: Ref<Object> = ref({})
+
+const menu: Ref<MenuItem[]> = ref([])
+const draftOrder = {
+  selectedItem: "",
+  selectedIngredients: []
+}
 
 async function refresh() {
   possibleIngredients.value = await (await fetch("/api/possible-ingredients")).json()
   possibleTeas.value = await (await fetch("/api/possible-teas")).json()
   possibleAll.value = await (await fetch("/api/possible-all")).json()
+  menu.value = await (await fetch("/api/menu/")).json()
 
   if (user.value) {
     customer.value = await (await fetch("/api/customer")).json()
@@ -68,6 +77,12 @@ async function refresh() {
   }
 }
 watch(user, refresh, { immediate: true })
+
+async function addToCart() {
+  Vue.set(draftOrderAll, draftOrder.selectedItem, draftOrder.selectedIngredients)
+  
+  await refresh()
+}
 
 async function save() {
   await fetch(

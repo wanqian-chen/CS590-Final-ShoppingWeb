@@ -2,7 +2,7 @@
   <div class="mx-3 my-3">
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
-    <b-button @click="editModeSwitch" class="mb-2">Edit Mode</b-button>
+    <b-form-checkbox v-model="mode.edit" @change="refresh" class="mb-2" switch>Edit Mode</b-form-checkbox>
     <!-- <b-button v-if="mode.edit" @click="addNewItem" class="mb-2">Add a new item</b-button> -->
 
     <div class="accordion" role="tablist">
