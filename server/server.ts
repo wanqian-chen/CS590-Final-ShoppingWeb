@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import pino from 'pino'
 import expressPinoLogger from 'express-pino-logger'
 import { Collection, Db, MongoClient, ObjectId } from 'mongodb'
-import { DraftOrder, Order, possibleIngredients, possibleTeas, possibleAll } from './data'
+import { DraftOrder, Order} from './data'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import { Issuer, Strategy } from 'openid-client'
@@ -104,17 +104,17 @@ app.get("/api/user", (req, res) => {
   res.json(req.user || {})
 })
 
-app.get("/api/possible-ingredients", checkAuthenticated, (req, res) => {
-  res.status(200).json(possibleIngredients)
-})
+// app.get("/api/possible-ingredients", checkAuthenticated, (req, res) => {
+//   res.status(200).json(possibleIngredients)
+// })
 
-app.get("/api/possible-teas", checkAuthenticated, (req, res) => {
-  res.status(200).json(possibleTeas)
-})
+// app.get("/api/possible-teas", checkAuthenticated, (req, res) => {
+//   res.status(200).json(possibleTeas)
+// })
 
-app.get("/api/possible-all", checkAuthenticated, (req, res) => {
-  res.status(200).json(possibleAll)
-})
+// app.get("/api/possible-all", checkAuthenticated, (req, res) => {
+//   res.status(200).json(possibleAll)
+// })
 
 app.get("/api/customer", checkAuthenticated, async (req, res) => {
   const _id = req.user.preferred_username
@@ -145,8 +145,7 @@ app.get("/api/customer/draft-order", checkAuthenticated, async (req, res) => {
   // TODO: validate customerId
 
   const draftOrder = await orders.findOne({ state: "draft", customerId })
-  // res.status(200).json(draftOrder || { customerId, ingredients: [] })
-  res.status(200).json(draftOrder || { customerId })
+  res.status(200).json(draftOrder || { customerId, order: {} })
 })
 
 app.put("/api/customer/draft-order", checkAuthenticated, async (req, res) => {

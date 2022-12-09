@@ -5,7 +5,7 @@
     <b-table :items="orders" :fields="fields">
       <template #cell(order.value)="cellScope">
         <div v-for="(ingredients, item) in cellScope.value">
-          {{item}} with 
+          {{item}} with choices of 
           <span v-for="ingredient in ingredients">
             '{{ingredient}}'
           </span>
