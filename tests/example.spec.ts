@@ -54,7 +54,7 @@ test('operator functions', async ({ page }) => {
   await page.click('#input-ingredient')
   await page.keyboard.type('water')
   await page.click('#menu-cancel-ingredient')  // cancel
-  await page.click('#menu-add-ingredient')
+  await page.click('#menu-add-ingredient-coffee')
   await page.click('#input-ingredient')
   await page.keyboard.type('italian')
   await page.click('#menu-save-ingredient')
@@ -63,6 +63,6 @@ test('operator functions', async ({ page }) => {
   await page.click('#menu-add-item')
   await page.click('#input-item')
   await page.keyboard.type('milktea')
-  await page.click('menu-save-item')
+  await page.click('#menu-save-item')
   await page.click('#menu-delete-item-milktea')
 });
