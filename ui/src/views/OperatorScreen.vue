@@ -7,7 +7,7 @@
         <div v-for="(ingredients, item) in cellScope.value">
           {{item}} with 
           <span v-for="ingredient in ingredients">
-            {{ingredient}},
+            '{{ingredient}}'
           </span>
         </div>
       </template>

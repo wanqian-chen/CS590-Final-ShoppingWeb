@@ -2,9 +2,18 @@
   <div class="mx-3 my-3">
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
-    <b-table v-if="customer" :items="customer.orders" />
+    <b-table v-if="customer" :items="customer?.orders" :fields="fields">
+      <template #cell(order)="cellScope">
+        <div v-for="(ingredients, item, index) in cellScope.value">
+          {{item}} with 
+          <span v-for="ingredient in ingredients">
+            '{{ingredient}}' 
+          </span>
+        </div>
+      </template>
+    </b-table>
 
-    <h2>Select Items:</h2>
+    <h2 class="mt-5">Select Items:</h2>
     <div>
       <b-form-select @change="refresh" v-model="draftOrder.selectedItem" :options="menu" value-field="itemId" text-field="itemId" class="mb-3">
         <!-- This slot appears above the options from 'options' prop -->
@@ -14,30 +23,27 @@
       </b-form-select>
     </div>
 
-    <div v-for="menuItem in menu" class="mb-3">
+    <div v-for="menuItem in menu">
       <div v-if="(menuItem.itemId == draftOrder.selectedItem)">
         <b-form-checkbox-group v-model="draftOrder.selectedIngredients" :options="menuItem.ingredientChoices" />
       </div>
     </div>
     
-    <h2>Your Cart</h2>
+    <div class="mt-4">
+      <b-button @click="addToCart" variant="outline-primary">Add to cart</b-button>
+    </div>
+
+    <h2 class="mt-5">Your Cart</h2>
     <div v-for="(ingredients, item, index) in draftOrderAll">
       <span>{{(index+1)}}. </span>
       <span>{{item}} with </span>
-      <span v-for="i in ingredients">
-        {{i}}
+      <span v-for="ingredient in ingredients">
+        '{{ingredient}}' 
       </span>
-      <span v-if="index != Object.keys(draftOrderAll).length - 1">, {{Object.keys(draftOrderAll).length}}</span>
     </div>
 
-    <div class="mt-2">
-      <b-button @click="addToCart">Add to cart</b-button>
-    </div>
-
-    <div class="mt-2">
-      <b-button @click="save">Save</b-button>
-    </div>
-    <div class="mt-2">
+    <div class="mt-5">
+      <b-button @click="save" variant="success" class="mr-3">Save</b-button>
       <b-button @click="submit">Submit</b-button>
       Note: must save before submitting
     </div>
@@ -52,13 +58,17 @@ const customer: Ref<CustomerWithOrders | null> = ref(null)
 const user: Ref<any> = inject("user")!
 
 const draftOrderIngredients: Ref<string[]> = ref([])
-const possibleIngredients: Ref<string[]> = ref([])
 
-const draftOrderTeas: Ref<string[]> = ref([])
-const possibleTeas: Ref<string[]> = ref([])
-
+const fields = [
+  "_id",
+  "customerId",
+  "state",
+  {
+    key: "order",
+    label: "Order Item"
+  }
+]
 let draftOrderAll = {}
-const possibleAll: Ref<Object> = ref({})
 
 const menu: Ref<MenuItem[]> = ref([])
 const draftOrder = {
@@ -67,9 +77,7 @@ const draftOrder = {
 }
 
 async function refresh() {
-  possibleIngredients.value = await (await fetch("/api/possible-ingredients")).json()
-  possibleTeas.value = await (await fetch("/api/possible-teas")).json()
-  possibleAll.value = await (await fetch("/api/possible-all")).json()
+  // possibleIngredients.value = await (await fetch("/api/possible-ingredients")).json()
   menu.value = await (await fetch("/api/menu/")).json()
 
   if (user.value) {
@@ -81,7 +89,11 @@ async function refresh() {
 watch(user, refresh, { immediate: true })
 
 async function addToCart() {
-  Vue.set(draftOrderAll, draftOrder.selectedItem, draftOrder.selectedIngredients)
+  if(draftOrder.selectedItem != "") {
+    Vue.set(draftOrderAll, draftOrder.selectedItem, draftOrder.selectedIngredients)
+    draftOrder.selectedItem = ""
+    draftOrder.selectedIngredients = []
+  }
   
   await refresh()
 }
