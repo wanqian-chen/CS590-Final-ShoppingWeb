@@ -1,7 +1,7 @@
 <template>
   <div class="mx-3 my-3">
     <h2>Orders</h2>
-    <b-button id="refresh" @click="refresh" class="mb-2">Refresh</b-button>
+    <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <b-table v-if="customer" :items="customer.orders" />
     
     <h2>Draft Order</h2>

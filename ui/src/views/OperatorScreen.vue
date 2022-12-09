@@ -3,6 +3,14 @@
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <b-table :items="orders" :fields="fields">
+      <template #cell(order.value)="data">
+        <div v-for="(item, ingredients) in data">
+          {{item}} with 
+          <span v-for="ingredient in ingredients">
+            {{ingredient}},
+          </span>
+        </div>
+      </template>
       <template #cell(operatorId)="cellScope">
         <span v-if="cellScope.value">
           {{ cellScope.value }}
@@ -33,7 +41,19 @@ async function refresh() {
 }
 watch(user, refresh, { immediate: true })
 
-const fields = ["_id", "customerId", "state", "ingredients", "operatorId"]
+const fields = [
+  "_id",
+  "customerId",
+  "state",
+  {
+    key: "order.value",
+    label: "Order Item",
+    // formatter: (value: object) => {
+    //   Object.keys(value)
+    // }
+  },
+  "operatorId"
+]
 
 async function updateOrder(orderId: string, state: string) {
   await fetch(
