@@ -261,6 +261,17 @@ app.put("/api/menurevise", checkAuthenticated, async (req, res) => {
         return
       }
       break
+    case "modify":
+      const resultModify = await menu.updateOne(
+        condition,
+        { $set: {"ingredientChoices.$[element]": draft.reviseIngredient}},
+        { arrayFilters: [{ element: draft.originIngredient }]}
+      )
+      if (resultModify.matchedCount === 0) {
+        res.status(400).json({ error: "collection not exists" })
+        return
+      }
+      break
     case "add":
       const resultAdd = await menu.insertOne(
         {

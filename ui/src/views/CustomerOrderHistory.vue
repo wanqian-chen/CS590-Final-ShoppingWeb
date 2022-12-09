@@ -21,12 +21,7 @@
   
   const customer: Ref<CustomerWithOrders | null> = ref(null)
   const user: Ref<any> = inject("user")!
-  
-  const draftOrderIngredients: Ref<string[]> = ref([])
-  const possibleIngredients: Ref<string[]> = ref([])
-  
-  const draftOrderTeas: Ref<string[]> = ref([])
-  const possibleTeas: Ref<string[]> = ref([])
+
 
   const fields = [
     "_id",
@@ -39,34 +34,11 @@
   ]
   
   async function refresh() {
-    possibleIngredients.value = await (await fetch("/api/possible-ingredients")).json()
-    possibleTeas.value = await (await fetch("/api/possible-teas")).json()
   
     if (user.value) {
       customer.value = await (await fetch("/api/customer")).json()
-      draftOrderIngredients.value = (await (await fetch("/api/customer/draft-order")).json())?.ingredients || []
     }
   }
   watch(user, refresh, { immediate: true })
   
-  async function save() {
-    await fetch(
-      "/api/customer/draft-order",
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PUT",
-        body: JSON.stringify({ ingredients: draftOrderIngredients.value, teas: draftOrderTeas.value })
-      }
-    )
-  }
-  
-  async function submit() {
-    await fetch(
-      "/api/customer/submit-draft-order",
-      { method: "POST" }
-    )
-    await refresh()
-  }
   </script>

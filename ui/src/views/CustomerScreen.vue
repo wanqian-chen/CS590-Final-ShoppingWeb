@@ -16,7 +16,7 @@
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <h2 class="mt-5">Select Items:</h2>
     <div>
-      <b-form-select @change="refresh" v-model="draftOrder.selectedItem" :options="menu" value-field="itemId" text-field="itemId" class="mb-3">
+      <b-form-select id="choose-item" @change="refresh" v-model="draftOrder.selectedItem" :options="menu" value-field="itemId" text-field="itemId" class="mb-3">
         <!-- This slot appears above the options from 'options' prop -->
         <template #first>
           <b-form-select-option :value="null" disabled>-- Please select an option --</b-form-select-option>
@@ -31,7 +31,7 @@
     </div>
     
     <div class="mt-4" v-if="draftOrder.selectedItem != ''">
-      <b-button @click="addToCart" variant="outline-primary">Add to cart</b-button>
+      <b-button id="add-to-cart" @click="addToCart" variant="outline-primary">Add to cart</b-button>
     </div>
 
     <h2 class="mt-5">Your Cart</h2>
@@ -45,8 +45,8 @@
 
     <div class="mt-3">
       <!-- <b-button @click="save" variant="success" class="mr-3">Save</b-button> -->
-      <b-button @click="clearCart" class="mr-3">Clear Cart</b-button>
-      <b-button @click="submit" variant="success">Submit</b-button>
+      <b-button id="clear-cart" @click="clearCart" class="mr-3">Clear Cart</b-button>
+      <b-button id="submit-order" @click="submit" variant="success">Submit</b-button>
     </div>
   </div>
 </template>
