@@ -45,24 +45,24 @@ test('operator functions', async ({ page }) => {
   await page.click('body > div > div > div.accordion > div:nth-child(2) > header > button.btn.btn-info.collapsed')
   await page.click('body > div > div > div.mb-2.custom-control.custom-switch > label')
   // revise existing ingredients
-  await page.click('/html/body/div/div/div[2]/div[2]/header/button[1]')
+  await page.click('#ingredient-america')
   await page.keyboard.type('n')
   await page.click('body > div > div > div.mb-2.custom-control.custom-switch > label')
   await page.click('body > div > div > div.mb-2.custom-control.custom-switch > label')
   // add and delete ingredient
-  await page.click('#accordion-coffee > div > div:nth-child(3) > button')
-  await page.click('#__BVID__29')
+  await page.click('#menu-add-ingredient-coffee')
+  await page.click('#input-ingredient')
   await page.keyboard.type('water')
-  await page.click('#accordion-coffee > div > div:nth-child(3) > button:nth-child(3)')  // cancel
-  await page.click('#accordion-coffee > div > div:nth-child(3) > button')
-  await page.click('#__BVID__29')
+  await page.click('#menu-cancel-ingredient')  // cancel
+  await page.click('#menu-add-ingredient')
+  await page.click('#input-ingredient')
   await page.keyboard.type('italian')
-  await page.click('#accordion-coffee > div > div:nth-child(3) > button.btn.mb-2.mt-2.mr-2.btn-secondary')
-  await page.click('#accordion-coffee > div > div:nth-child(3) > button')
+  await page.click('#menu-save-ingredient')
+  await page.click('#menu-delete-ingredient-italian')
   // add and delete items
   await page.click('#menu-add-item')
-  await page.click('#__BVID__33')
+  await page.click('#input-item')
   await page.keyboard.type('milktea')
   await page.click('menu-save-item')
-  await page.click('body > div > div > div.accordion > div:nth-child(4) > header > button.btn.ml-2.btn-outline-danger')
+  await page.click('#menu-delete-item-milktea')
 });

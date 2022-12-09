@@ -9,21 +9,21 @@
       <b-card no-body class="mb-1" v-for="menuItem in menu">
         <b-card-header header-tag="header" class="p-1" role="tab">
           <b-button v-b-toggle="('accordion-'+menuItem.itemId)" variant="info">{{menuItem.itemId}}</b-button>
-          <b-button id="menu-delete-item" v-if="mode.edit" @click="deleteItem(menuItem.itemId)" class="ml-2" variant="outline-danger">Delete Item</b-button>
+          <b-button :id="('menu-delete-item-'+menuItem.itemId)" v-if="mode.edit" @click="deleteItem(menuItem.itemId)" class="ml-2" variant="outline-danger">Delete Item</b-button>
         </b-card-header>
         <b-collapse :id="('accordion-'+menuItem.itemId)" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
             <!-- <b-card-text>{{value}}</b-card-text> -->
             <div v-for="choice in menuItem.ingredientChoices">
               <!-- <b-button @click="updateIngredient(menuItem.itemId, choice)" class="mb-2">Revise</b-button> -->
-              <b-form-input v-if="mode.edit" v-model="choice" @focus="saveOrigin(String(choice))" @blur="reviseIngredient(menuItem.itemId, String(choice))" type="text"></b-form-input>
+              <b-form-input :id="('ingredient-'+choice)" v-if="mode.edit" v-model="choice" @focus="saveOrigin(String(choice))" @blur="reviseIngredient(menuItem.itemId, String(choice))" type="text"></b-form-input>
               <!-- <b-button v-if="mode.edit" @click="reviseIngredient(menuItem.itemId, String(choice))" class="mt-2 mb-4 mr-2">Save</b-button> -->
-              <b-button id="menu-delete-ingredient" v-if="mode.edit" @click="deleteIngredient(menuItem.itemId, choice)" class="mt-2 mb-4" variant="outline-danger">Delete the ingredient</b-button>
+              <b-button :id="('menu-delete-ingredient-'+choice)" v-if="mode.edit" @click="deleteIngredient(menuItem.itemId, choice)" class="mt-2 mb-4" variant="outline-danger">Delete the ingredient</b-button>
               <b-card-text v-if="!mode.edit">{{choice}}</b-card-text>
             </div>
 
             <div v-if="(mode.edit && !mode.addNew)">
-              <b-button id="menu-add-ingredient" v-if="menuItem.itemId != draft.reviseItem" @click="addIngredient(menuItem.itemId)" class="mb-2" variant="outline-primary">Add an ingredient</b-button>
+              <b-button :id="('menu-add-ingredient-'+menuItem.itemId)" v-if="menuItem.itemId != draft.reviseItem" @click="addIngredient(menuItem.itemId)" class="mb-2" variant="outline-primary">Add an ingredient</b-button>
               <b-form-input id="input-ingredient" v-if="menuItem.itemId == draft.reviseItem" v-model="draft.reviseIngredient" placeholder="Add an ingredient"></b-form-input>
               <b-button id="menu-save-ingredient" v-if="menuItem.itemId == draft.reviseItem" @click="save(String('revise'))" class="mb-2 mt-2 mr-2">Save</b-button>
               <b-button id="menu-cancel-ingredient" v-if="menuItem.itemId == draft.reviseItem" @click="reset" class="mb-2 mt-2">Cancel</b-button>
