@@ -1,16 +1,5 @@
 <template>
   <div class="mx-3 my-3">
-    <!-- <h2>Orders</h2>
-    <b-table v-if="customer" :items="customer?.orders" :fields="fields">
-      <template #cell(order)="cellScope">
-        <div v-for="(ingredients, item, index) in cellScope.value">
-          {{item}} with 
-          <span v-for="ingredient in ingredients">
-            '{{ingredient}}' 
-          </span>
-        </div>
-      </template>
-    </b-table> -->
 
     <h1>Start Ordering</h1>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
