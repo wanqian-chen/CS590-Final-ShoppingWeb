@@ -48,11 +48,7 @@ import Vue, { watch, ref, Ref, inject } from 'vue'
 import { Operator, Order, MenuItem } from "../../../server/data"
 
 const operator: Ref<Operator | null> = ref(null)
-const orders: Ref<Order[]> = ref([])
 const menu: Ref<MenuItem[]> = ref([])
-
-const draftOrderAll: Ref<Object> = ref({})
-const possibleAll: Ref<Object> = ref({})
 
 const user: Ref<any> = inject("user")!
 
@@ -73,7 +69,7 @@ async function refresh() {
   if (user.value) {
     operator.value = await (await fetch("/api/operator/")).json()
   }
-  orders.value = await (await fetch("/api/orders/")).json()
+
   menu.value = await (await fetch("/api/menu/")).json()
 }
 watch(user, refresh, { immediate: true })
