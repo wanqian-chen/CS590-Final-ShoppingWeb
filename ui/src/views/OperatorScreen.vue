@@ -3,7 +3,7 @@
     <h2>Orders</h2>
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
     <b-table :items="orders" :fields="fields">
-      <template #cell(order.value)="cellScope">
+      <template #cell(order)="cellScope">
         <div v-for="(ingredients, item) in cellScope.value">
           {{item}} with choices of 
           <span v-for="ingredient in ingredients">
@@ -47,7 +47,7 @@ const fields = [
   "customerId",
   "state",
   {
-    key: "order.value",
+    key: "order",
     label: "Order Item"
   },
   "operatorId"
