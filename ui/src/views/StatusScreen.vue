@@ -1,7 +1,6 @@
 <template>
   <div class="mx-3 my-3">
     <b-button @click="refresh" class="mb-2">Refresh</b-button>
-    <!-- <b-table :items="orders" /> -->
     <b-table :items="orders" :fields="fields">
       <template #cell(order.value)="cellScope">
         <div v-for="(ingredients, item) in cellScope.value">
@@ -26,7 +25,7 @@ const fields = [
   "customerId",
   "state",
   {
-    key: "order.value",
+    key: "order",
     label: "Order Item"
   },
   "operatorId"
