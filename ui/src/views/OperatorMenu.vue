@@ -82,27 +82,6 @@ async function saveOrigin(origin: string) {
   draft.originIngredient = origin
 }
 
-async function addNewItem(menuItem: string, choice: string) {
-  await fetch(
-    "/api/menurevise/" + encodeURIComponent(menuItem) + "/" + encodeURIComponent(choice),
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "PUT",
-      body: JSON.stringify({
-        choice: "a"
-      })
-    }
-  )
-  await refresh()
-}
-
-async function editModeSwitch() {
-  mode.edit = !mode.edit
-  await refresh()
-}
-
 async function startAdding() {
   mode.addNew = true
   await refresh()
